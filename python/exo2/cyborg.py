@@ -15,15 +15,15 @@ class Cyborg(Humain, Robot):
     def __str__(self):
         return f"{Robot.__str__(self)}\n{Humain.__str__(self)}"
 
+if __name__=="__main__":
+    cyborg = Cyborg("Deux Ex Machina", "M")
 
-cyborg = Cyborg("Deux Ex Machina", "M")
-
-print(cyborg.name, "sexe", cyborg.sexe)
-print("Charging battery...")
-cyborg.robot_charging()
-cyborg.robot_power_on()
-print("State: ", cyborg.robot_status())
-cyborg.humain_nourriture("banana")
-cyborg.humain_nourriture(["oignon", "chips"])
-cyborg.humain_digestion()
-print(cyborg)
+    print(cyborg.name, "sexe", cyborg.sexe)
+    print("Charging battery...")
+    cyborg.robot_charging()
+    cyborg.robot_power_on()
+    print("State: ", cyborg.robot_status())
+    cyborg.humain_nourriture("banana")
+    cyborg.humain_nourriture(["oignon", "chips"])
+    cyborg.humain_digestion()
+    print(cyborg)
