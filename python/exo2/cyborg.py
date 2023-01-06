@@ -10,8 +10,8 @@ class Cyborg(Humain, Robot):
         self.name = name
         self.sexe = sexe
 
-    # def __str__(self):
-    #     return f"{super(Humain, self).__str__()}\n{super(Robot, self).__str__()}"
+    def __str__(self):
+        return f"{Robot.__str__(self)}\n{Humain.__str__(self)}"
 
 
 cyborg = Cyborg('Deux Ex Machina', 'M')

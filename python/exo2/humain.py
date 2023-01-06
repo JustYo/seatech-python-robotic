@@ -25,7 +25,8 @@ class Humain():
         if "oignon" in self.__nourriture:
             self.__state = False
         else:
+
             self.__state = True
 
     def __str__(self):
-        return f"sexe: {self.__sexe}, nourriture: {self.__nourriture}, digestion: {self.__digestion[self.__state]}"
+        return f"Attributs de l'Humain : Sexe: {self.__sexe}, Nourriture: {self.__nourriture}, Digestion: {self.__digestion[self.__state]}"
