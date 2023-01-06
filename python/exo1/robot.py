@@ -44,6 +44,7 @@ class Robot:
     def __str__(self):
         return f"name: {self.__name}, power: {self.__states[self.__power]}, charge: {self.__battery_level}%, speed: {self.__current_speed} km/h"
 
+
 monrobot = Robot("Paul")
 monrobot.robot_power_on()
 monrobot.robot_charging()

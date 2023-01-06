@@ -1,7 +1,9 @@
 """Deuxième exercice"""
 
-class Humain():
+
+class Humain:
     """Création d'un humain"""
+
     __sexe = ""
     __nourriture = []
     __digestion = ["Vomis", "Digestion bonne"]

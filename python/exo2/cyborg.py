@@ -2,8 +2,10 @@
 from humain import Humain
 from robot import Robot
 
+
 class Cyborg(Humain, Robot):
     """test"""
+
     def __init__(self, name, sexe):
         Robot.__init__(self, name)
         Humain.__init__(self, sexe)
@@ -14,14 +16,14 @@ class Cyborg(Humain, Robot):
         return f"{Robot.__str__(self)}\n{Humain.__str__(self)}"
 
 
-cyborg = Cyborg('Deux Ex Machina', 'M')
+cyborg = Cyborg("Deux Ex Machina", "M")
 
-print(cyborg.name, 'sexe', cyborg.sexe)
-print('Charging battery...')
+print(cyborg.name, "sexe", cyborg.sexe)
+print("Charging battery...")
 cyborg.robot_charging()
 cyborg.robot_power_on()
 print("State: ", cyborg.robot_status())
-cyborg.humain_nourriture('banana')
-cyborg.humain_nourriture(['oignon', 'chips'])
+cyborg.humain_nourriture("banana")
+cyborg.humain_nourriture(["oignon", "chips"])
 cyborg.humain_digestion()
 print(cyborg)
