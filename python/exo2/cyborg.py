@@ -11,9 +11,28 @@ class Cyborg(Humain, Robot):
         Humain.__init__(self, sexe)
         self.name = name
         self.sexe = sexe
+        self.weapons = ""
+        self.style = ""
+
+    def select_weapons(self):
+        """Give weapons to the robot"""
+        weapons_selected = input("Choose your weapon soldier (hands, katana, laser saber) : ")
+        self.weapons = weapons_selected
+
+    def fight_style(self):
+        """Robot fight style"""
+        if self.weapons == "hand":
+            self.style = "Boxe"
+        elif self.weapons == "katana":
+            self.style = "Ninja"
+        elif self.style == "laser saber":
+            self.style = "Jedi"
+        else:
+            self.style = "Chuck Norris"
+
 
     def __str__(self):
-        return f"{Robot.__str__(self)}\n{Humain.__str__(self)}"
+        return f"Cyborg : weapon: {self.weapons}, fight style: {self.style}\n{Robot.__str__(self)}\n{Humain.__str__(self)}"
 
 if __name__=="__main__":
     cyborg = Cyborg("Deux Ex Machina", "M")
@@ -26,4 +45,6 @@ if __name__=="__main__":
     cyborg.humain_nourriture("banana")
     cyborg.humain_nourriture(["oignon", "chips"])
     cyborg.humain_digestion()
+    cyborg.select_weapons()
+    cyborg.fight_style()
     print(cyborg)
