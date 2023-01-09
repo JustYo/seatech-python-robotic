@@ -5,12 +5,14 @@ from robot import Robot
 
 class Cyborg(Humain, Robot):
     """test"""
+    __name = ""
+    __sexe = ""
 
     def __init__(self, name, sexe):
         Robot.__init__(self, name)
         Humain.__init__(self, sexe)
-        self.name = name
-        self.sexe = sexe
+        self.__name = name
+        self.__sexe = sexe
         self.weapons = ""
         self.style = ""
 
@@ -30,6 +32,26 @@ class Cyborg(Humain, Robot):
         else:
             self.style = "Chuck Norris"
 
+    @property
+    def name(self):
+        """Retourne le nom"""
+        return self.__name
+
+    @property
+    def sexe(self):
+        """Retourne le sexe"""
+        return self.__sexe
+
+    @classmethod
+    def get_original_name(cls):
+        """Get the attributes without self"""
+        return cls.__name
+
+    @classmethod
+    def get_original_sexe(cls):
+        """Get the attributes without self"""
+        return cls.__sexe
+
 
     def __str__(self):
         return f"Cyborg : weapon: {self.weapons}, fight style: {self.style}\n{Robot.__str__(self)}\n{Humain.__str__(self)}"
@@ -37,7 +59,8 @@ class Cyborg(Humain, Robot):
 if __name__=="__main__":
     cyborg = Cyborg("Deux Ex Machina", "M")
 
-    print(cyborg.name, "sexe", cyborg.sexe)
+    print(cyborg.name(), "sexe", cyborg.sexe())
+    print(cyborg.get_original_name(), "sexe", cyborg.get_original_sexe())
     print("Charging battery...")
     cyborg.robot_charging()
     cyborg.robot_power_on()
