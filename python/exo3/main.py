@@ -2,18 +2,31 @@
 
 from abc import ABCMeta, abstractmethod
 
+
 class UnmannedVehicle(metaclass=ABCMeta):
     """
-        An autonomous vehicle have to do his mission automatically.
-        This mission can be configured by an operator.
+    An autonomous vehicle have to do his mission automatically.
+    This mission can be configured by an operator.
     """
+
+    @abstractmethod
+    def __init__(self, brand, fuel):
+        """Initialize the unmanned vehicule"""
 
     @abstractmethod
     def get_brand(self):
         """Get the brand of a vehicule"""
 
     @abstractmethod
+    def set_brand(self, brand):
+        """Get the brand of a vehicule"""
+
+    @abstractmethod
     def get_fuel(self):
+        """Get fuel"""
+
+    @abstractmethod
+    def set_fuel(self, fuel):
         """Get fuel"""
 
     @abstractmethod
@@ -25,15 +38,15 @@ class UnmannedVehicle(metaclass=ABCMeta):
     def get_default_brand(cls):
         """Get the default brand"""
 
-class AerialVehicle(metaclass=ABCMeta):
-    """ A vehicle made for ground fields."""
+
+class AerialVehicle(UnmannedVehicle, metaclass=ABCMeta):
+    """A vehicle made for ground fields."""
+
     altitude = 0
     passengers = 0
-    fuel = ""
-    brand = "aerial_default"
 
     @abstractmethod
-    def __init__(self, altitude, passengers, fuel, brand):
+    def __init__(self, altitude, passengers):
         """Initialise the aerial vehicule object"""
 
     @abstractmethod
@@ -44,15 +57,15 @@ class AerialVehicle(metaclass=ABCMeta):
     def get_passengers(self):
         """Get the passengers number"""
 
+
 class GroundVehicle(metaclass=ABCMeta):
-    """ A vehicle made for ground fields."""
+    """A vehicle made for ground fields."""
+
     wheels = 0
     horse_power = 0
-    fuel = ""
-    brand = "ground_default"
 
     @abstractmethod
-    def __init__(self, wheels, horse_power, fuel, brand):
+    def __init__(self, wheels, horse_power):
         """Initialisation of ground vehicule"""
 
     @abstractmethod
@@ -63,15 +76,15 @@ class GroundVehicle(metaclass=ABCMeta):
     def get_horse_power(self):
         """Get the number of horse power"""
 
+
 class UnderseaVehicle(metaclass=ABCMeta):
-    """ A vehicle made for ground fields."""
+    """A vehicle made for ground fields."""
+
     veh_type = ""
     deep = 0
-    fuel = ""
-    brand = "undersea_default"
 
     @abstractmethod
-    def __init__(self, veh_type, deep, fuel, brand):
+    def __init__(self, veh_type, deep):
         """Initialise the undersea vehicule"""
 
     @abstractmethod
@@ -82,13 +95,17 @@ class UnderseaVehicle(metaclass=ABCMeta):
     def get_deep(self):
         """Get the deepness"""
 
+
 class UAV(AerialVehicle, UnmannedVehicle):
     """Unmanned Aerial Vehicle"""
-    def __init__(self, altitude, passengers, fuel, brand):
+
+    fuel = "Kérosène"
+    brand = "Airbus"
+
+    def __init__(self, altitude, passengers):
+        UnmannedVehicle.__init__(self, self.brand, self.fuel)
         self.altitude = altitude
         self.passengers = passengers
-        self.fuel = fuel
-        self.brand = brand
 
     def get_altitude(self):
         """Get the altitude"""
@@ -106,25 +123,35 @@ class UAV(AerialVehicle, UnmannedVehicle):
         """Get the number of passengers"""
         return self.passengers
 
+    def set_brand(self, brand):
+        self.brand = brand
+
+    def set_fuel(self, fuel):
+        self.fuel = fuel
+
     @classmethod
     def get_default_brand(cls):
         return cls.brand
 
     def nohuman_presentation(self):
-        uav = UAV(self.altitude, self.brand, self.fuel, self.passengers)
-        return f"From Unmanned Vehicule : defaultbrand : {uav.get_default_brand()} brand : {self.brand}, fuel : {self.fuel}"
+        method_uav = UAV(self.fuel, self.passengers)
+        return f"From Unmanned Vehicule : defaultbrand : {method_uav.get_default_brand()} brand : {self.brand}, fuel : {self.fuel}"
 
     def uav_presentation(self):
         """Present the aerial vehicule"""
         return f"From Aerial Vehicule : altitude : {self.altitude}, passengers : {self.passengers}"
 
+
 class UUV(UnderseaVehicle, UnmannedVehicle):
     """Unmanned Undersea Vehicle"""
-    def __init__(self, veh_type, deep, fuel, brand):
+
+    brand = "iFremer"
+    fuel = "Electrique"
+
+    def __init__(self, veh_type, deep):
+        UnmannedVehicle.__init__(self, self.brand, self.fuel)
         self.veh_type = veh_type
         self.deep = deep
-        self.fuel = fuel
-        self.brand = brand
 
     def get_deep(self):
         """Get the deep"""
@@ -141,25 +168,35 @@ class UUV(UnderseaVehicle, UnmannedVehicle):
         """Get the fuel"""
         return self.fuel
 
+    def set_brand(self, brand):
+        self.brand = brand
+
+    def set_fuel(self, fuel):
+        self.fuel = fuel
+
     @classmethod
     def get_default_brand(cls):
         return cls.brand
 
     def nohuman_presentation(self):
-        uuv = UUV(self.deep, self.veh_type, self.brand, self.fuel)
-        return f"From Unmanned Vehicule : defaultbrand : {uuv.get_default_brand()} | brand : {self.brand} | fuel : {self.fuel}"
+        method_uuv = UUV(self.deep, self.veh_type)
+        return f"From Unmanned Vehicule : defaultbrand : {method_uuv.get_default_brand()} | brand : {self.brand} | fuel : {self.fuel}"
 
     def uuv_presentation(self):
         """Present the vehicule"""
         return f"From Undersea Vehicule : deepness : {self.deep} | vehicule type : {self.veh_type}"
 
+
 class UGV(GroundVehicle, UnmannedVehicle):
     """Unmanned Ground Vehicle"""
-    def __init__(self, wheels, horse_power, fuel, brand):
+
+    brand = "Mercedes"
+    fuel = "Essence"
+
+    def __init__(self, wheels, horse_power):
+        UnmannedVehicle.__init__(self, self.brand, self.fuel)
         self.wheels = wheels
         self.horse_power = horse_power
-        self.fuel = fuel
-        self.brand = brand
 
     def get_wheels(self):
         return self.wheels
@@ -175,28 +212,46 @@ class UGV(GroundVehicle, UnmannedVehicle):
         """Get the fuel"""
         return self.fuel
 
+    def set_brand(self, brand):
+        self.brand = brand
+
+    def set_fuel(self, fuel):
+        self.fuel = fuel
+
     @classmethod
     def get_default_brand(cls):
         return cls.brand
 
     def nohuman_presentation(self):
-        ugv = UGV(self.wheels, self.horse_power, self.brand, self.fuel)
-        return f"From Unmanned Vehicule : defaultbrand : {ugv.get_default_brand()} | brand : {self.brand} | fuel : {self.fuel}"
+        method_ugv = UGV(self.wheels, self.horse_power)
+        return f"From Unmanned Vehicule : defaultbrand : {method_ugv.get_default_brand()} | brand : {self.brand} | fuel : {self.fuel}"
 
     def ugv_presentation(self):
         """Present the vehicule"""
         return f"From Ground Vehicule : wheels : {self.wheels} | horse power : {self.horse_power}"
 
+
 class Transformers(UUV, UGV, UAV):
     """Clone all the previous classes"""
+
     name = ""
     good_bad_guy = ""
 
-    def __init__(self, name, good_bad_guy, veh_type, deep, wheels, horse_power, altitude, passengers, fuel, brand):
+    def __init__(
+        self,
+        name,
+        good_bad_guy,
+        veh_type,
+        deep,
+        wheels,
+        horse_power,
+        altitude,
+        passengers,
+    ):
         """Init all the classes"""
-        UUV.__init__(self, veh_type, deep, fuel, brand)
-        UGV.__init__(self, wheels, horse_power, fuel, brand)
-        UAV.__init__(self, altitude, passengers, fuel, brand)
+        UUV.__init__(self, veh_type, deep)
+        UGV.__init__(self, wheels, horse_power)
+        UAV.__init__(self, altitude, passengers)
         self.name = name
         self.good_bad_guy = good_bad_guy
 
@@ -205,21 +260,31 @@ class Transformers(UUV, UGV, UAV):
         self.uav_presentation()
         self.ugv_presentation()
         self.uuv_presentation()
-        return f"I am {self.name} and I am a {self.good_bad_guy} guy\n{self.uav_presentation()}\n{self.ugv_presentation()}\n{self.uuv_presentation()}"
+        return f"I am {self.name} and I am a {self.good_bad_guy}\n{self.nohuman_presentation()}\n{self.uav_presentation()}\n{self.ugv_presentation()}\n{self.uuv_presentation()}"
+
+    def set_brand(self, brand):
+        self.brand = brand
+
+    def set_fuel(self, fuel):
+        self.fuel = fuel
 
 
-if __name__=='__main__':
-    uav = UAV(300, 400, "Kerozen", "Airbus")
+if __name__ == "__main__":
+    uav = UAV(300, 400)
     print(uav.nohuman_presentation())
     print(uav.uav_presentation())
 
-    uuv = UUV("Sous-marin touristique", -400, "Essence", "iFremer")
+    uuv = UUV("Sous-marin touristique", -400)
     print(uuv.nohuman_presentation())
     print(uuv.uuv_presentation())
 
-    ugv = UGV(8, 1000, "Diezel", "Mercedes")
+    ugv = UGV(8, 1000)
     print(ugv.nohuman_presentation())
     print(ugv.ugv_presentation())
 
-    transformers = Transformers("Optimus Prime", "Good", "Transformers", -1000, 4, 500, 600, 4, "Essence extraterrestre", "Decepticons")
+    transformers = Transformers(
+        "Optimus Prime", "good guy", "Transformers", -1000, 4, 500, 600, 4
+    )
+    transformers.set_brand("Autobots")
+    transformers.set_fuel("Essence Extraterrestre")
     print(transformers.trans_presentation())
