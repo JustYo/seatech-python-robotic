@@ -270,6 +270,7 @@ class Transformers(UUV, UGV, UAV):
 
 
 if __name__ == "__main__":
+    print("test")
     uav = UAV(300, 400)
     print(uav.nohuman_presentation())
     print(uav.uav_presentation())
