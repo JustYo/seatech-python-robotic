@@ -15,22 +15,22 @@ class UnmannedVehicle(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def __brand(self):
+    def _brand(self):
         """Get the brand of a vehicule"""
 
-    @__brand.setter
+    @_brand.setter
     @abstractmethod
-    def __brand(self, brand):
+    def _brand(self, brand):
         """Get the brand of a vehicule"""
 
     @property
     @abstractmethod
-    def __fuel(self):
+    def _fuel(self):
         """Get fuel"""
 
-    @__fuel.setter
+    @_fuel.setter
     @abstractmethod
-    def __fuel(self, fuel):
+    def _fuel(self, fuel):
         """Get fuel"""
 
     @abstractmethod
@@ -107,7 +107,7 @@ class UAV(AerialVehicle, UnmannedVehicle):
     __brand = "Airbus"
 
     def __init__(self, altitude, passengers):
-        UnmannedVehicle.__init__(self, self.__brand, self.__fuel)
+        UnmannedVehicle.__init__(self, self._brand, self._fuel)
         self.altitude = altitude
         self.passengers = passengers
 
@@ -116,12 +116,12 @@ class UAV(AerialVehicle, UnmannedVehicle):
         return self.altitude
 
     @property
-    def _UnmannedVehicle__brand(self):
+    def _brand(self):
         """Get the brand"""
         return self.__brand
 
     @property
-    def _UnmannedVehicle__fuel(self):
+    def _fuel(self):
         """Get the fuel"""
         return self.__fuel
 
@@ -129,22 +129,22 @@ class UAV(AerialVehicle, UnmannedVehicle):
         """Get the number of passengers"""
         return self.passengers
 
-    @_UnmannedVehicle__brand.setter
-    def _UnmannedVehicle__brand(self, brand):
-        self.__brand = brand
+    @_brand.setter
+    def _brand(self, brand):
+        self._brand = brand
 
-    @_UnmannedVehicle__fuel.setter
-    def _UnmannedVehicle__fuel(self, fuel):
+    @_fuel.setter
+    def _fuel(self, fuel):
         """Get the fuel"""
-        self.__fuel = fuel
+        self._fuel = fuel
 
     @classmethod
     def get_default_brand(cls):
         return cls.__brand
 
     def nohuman_presentation(self):
-        method_uav = UAV(self.__fuel, self.passengers)
-        return f"From Unmanned Vehicule : defaultbrand : {method_uav.get_default_brand()} brand : {self.__brand}, fuel : {self.__fuel}"
+        method_uav = UAV(self._fuel, self.passengers)
+        return f"From Unmanned Vehicule : defaultbrand : {method_uav.get_default_brand()} brand : {self._brand}, fuel : {self._fuel}"
 
     def uav_presentation(self):
         """Present the aerial vehicule"""
@@ -158,7 +158,7 @@ class UUV(UnderseaVehicle, UnmannedVehicle):
     __fuel = "Electrique"
 
     def __init__(self, veh_type, deep):
-        UnmannedVehicle.__init__(self, self.__brand, self.__fuel)
+        UnmannedVehicle.__init__(self, self._brand, self._fuel)
         self.veh_type = veh_type
         self.deep = deep
 
@@ -170,21 +170,21 @@ class UUV(UnderseaVehicle, UnmannedVehicle):
         return self.veh_type
 
     @property
-    def _UnmannedVehicle__brand(self):
+    def _brand(self):
         """Get the brand"""
         return self.__brand
 
     @property
-    def _UnmannedVehicle__fuel(self):
+    def _fuel(self):
         """Get the fuel"""
         return self.__fuel
 
-    @_UnmannedVehicle__brand.setter
-    def _UnmannedVehicle__brand(self, brand):
+    @_brand.setter
+    def _brand(self, brand):
         self.__brand = brand
 
-    @_UnmannedVehicle__fuel.setter
-    def _UnmannedVehicle__fuel(self, fuel):
+    @_fuel.setter
+    def _fuel(self, fuel):
         """Get the fuel"""
         self.__fuel = fuel
 
@@ -194,7 +194,7 @@ class UUV(UnderseaVehicle, UnmannedVehicle):
 
     def nohuman_presentation(self):
         method_uuv = UUV(self.deep, self.veh_type)
-        return f"From Unmanned Vehicule : defaultbrand : {method_uuv.get_default_brand()} | brand : {self.__brand} | fuel : {self.__fuel}"
+        return f"From Unmanned Vehicule : defaultbrand : {method_uuv.get_default_brand()} | brand : {self._brand} | fuel : {self._fuel}"
 
     def uuv_presentation(self):
         """Present the vehicule"""
@@ -208,7 +208,7 @@ class UGV(GroundVehicle, UnmannedVehicle):
     __fuel = "Essence"
 
     def __init__(self, wheels, horse_power):
-        UnmannedVehicle.__init__(self, self.__brand, self.__fuel)
+        UnmannedVehicle.__init__(self, self._brand, self._fuel)
         self.wheels = wheels
         self.horse_power = horse_power
 
@@ -219,21 +219,21 @@ class UGV(GroundVehicle, UnmannedVehicle):
         return self.horse_power
 
     @property
-    def _UnmannedVehicle__brand(self):
+    def _brand(self):
         """Get the brand"""
         return self.__brand
 
     @property
-    def _UnmannedVehicle__fuel(self):
+    def _fuel(self):
         """Get the fuel"""
         return self.__fuel
 
-    @_UnmannedVehicle__brand.setter
-    def _UnmannedVehicle__brand(self, brand):
+    @_brand.setter
+    def _brand(self, brand):
         self.__brand = brand
 
-    @_UnmannedVehicle__fuel.setter
-    def _UnmannedVehicle__fuel(self, fuel):
+    @_fuel.setter
+    def _fuel(self, fuel):
         """Get the fuel"""
         self.__fuel = fuel
 
@@ -243,7 +243,7 @@ class UGV(GroundVehicle, UnmannedVehicle):
 
     def nohuman_presentation(self):
         method_ugv = UGV(self.wheels, self.horse_power)
-        return f"From Unmanned Vehicule : defaultbrand : {method_ugv.get_default_brand()} | brand : {self.__brand} | fuel : {self.__fuel}"
+        return f"From Unmanned Vehicule : defaultbrand : {method_ugv.get_default_brand()} | brand : {self._brand} | fuel : {self._fuel}"
 
     def ugv_presentation(self):
         """Present the vehicule"""
@@ -276,26 +276,7 @@ class Transformers(UUV, UGV, UAV):
         self.uav_presentation()
         self.ugv_presentation()
         self.uuv_presentation()
-        return f"I am {self.name} and I am a {self.good_bad_guy}\n{self.uav_presentation()}\n{self.ugv_presentation()}\n{self.uuv_presentation()}"
-
-    @property
-    def _UnmannedVehicle__brand(self):
-        """Get the brand"""
-        return self.__brand
-
-    @property
-    def _UnmannedVehicle__fuel(self):
-        """Get the fuel"""
-        return self.__fuel
-
-    @_UnmannedVehicle__brand.setter
-    def _UnmannedVehicle__brand(self, brand):
-        self.__brand = brand
-
-    @_UnmannedVehicle__fuel.setter
-    def _UnmannedVehicle__fuel(self, fuel):
-        """Get the fuel"""
-        self.__fuel = fuel
+        return f"I am {self.name} and I am a {self.good_bad_guy}\n{self.ugv_presentation()}\n{self.uuv_presentation()}"
 
 
 if __name__ == "__main__":
