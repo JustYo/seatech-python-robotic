@@ -98,64 +98,19 @@ class MyRobot:
         """Set the combined speed"""
         self.set_wheels_speeds(speed, speed, speed, speed, speed, speed, speed, speed)
 
-    def enable_passive_wheels(self, enable):
-        torques = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        if enable:
-            for i in range(len(torques)):
-                torques.append(Motor.getAvailableTorque(self.wheel_motors[i]))
-        else:
-            for i in range(len(torques)):
-                Motor.setAvailableTorque(self.wheel_motors[i], torques[i])
-
-    def set_rotation_wheels_angle(self, fl, fr, bl, br, wait_on_feedback):
-        if wait_on_feedback:
-            self.stop_wheels()
-            self.enable_passive_wheels(True)
+    def set_rotation_wheels_angle(self, fl, fr, bl, br):
 
         Motor.setPosition(self.rotation_motors[0], fl)
         Motor.setPosition(self.rotation_motors[1], fr)
         Motor.setPosition(self.rotation_motors[2], bl)
         Motor.setPosition(self.rotation_motors[3], br)
 
-        if wait_on_feedback:
-            target = [fl, fr, bl, br]
-            while True:
-                all_reached = True
-                for i in range(len(target)):
-                    current_position = PositionSensor.getValue(self.rotation_sensors[i])
-                    # if self.almost_equal(current_position, target[i]) == False:
-                    if (current_position < target[i] + TOLERANCE) and (
-                        current_position > target[i] - TOLERANCE
-                    ) == False:
-                        all_reached = False
-                        break
-                if all_reached:
-                    break
-                else:
-                    self.step()
-            self.enable_passive_wheels(False)
-
     def robot_rotate(self, angle):
         self.stop_wheels()
 
-        self.set_rotation_wheels_angle(
-            3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4, True
-        )
-        if angle < 0:
-            max_wheel_speed = MAX_WHEEL_SPEED
-        else:
-            max_wheel_speed = -MAX_WHEEL_SPEED
+        self.set_rotation_wheels_angle(3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4)
 
-        self.set_wheels_speeds(
-            max_wheel_speed,
-            max_wheel_speed,
-            max_wheel_speed,
-            max_wheel_speed,
-            max_wheel_speed,
-            max_wheel_speed,
-            max_wheel_speed,
-            max_wheel_speed,
-        )
+        self.set_wheel_speed(MAX_WHEEL_SPEED)
 
         initial_wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
         expected_travel_distance = fabs(
@@ -170,24 +125,15 @@ class MyRobot:
             )
 
             if wheel0_travel_distance > expected_travel_distance:
-                break
+                break                
 
-            if expected_travel_distance - wheel0_travel_distance > 0.025:
-                self.set_wheels_speeds(
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                    0.1 * max_wheel_speed,
-                )
+            if expected_travel_distance - wheel0_travel_distance < 0.025:
+                self.set_wheel_speed(MAX_WHEEL_SPEED)
 
             self.step()
 
-            self.set_rotation_wheels_angle(0.0, 0.0, 0.0, 0.0, True)
-            self.stop_wheels()
+        self.set_rotation_wheels_angle(0.0, 0.0, 0.0, 0.0)
+        self.stop_wheels()
 
     def stop_wheels(self):
         """Stop the wheels"""
@@ -195,8 +141,25 @@ class MyRobot:
 
     def robot_go_forward(self, distance):
         """Function to tell the distance for the robot"""
-        max_wheel_speed = MAX_WHEEL_SPEED if distance > 0 else -MAX_WHEEL_SPEED
-        self.set_wheel_speed(max_wheel_speed)
+
+        self.set_wheel_speed(MAX_WHEEL_SPEED)
+
+        initial_wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
+
+        while True:
+            wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
+
+            wheel0_travel_distance = fabs(
+                WHEEL_RADIUS * (wheel0_position - initial_wheel0_position)
+            )
+
+            if wheel0_travel_distance > fabs(distance):
+                break
+
+            if fabs(distance) - wheel0_travel_distance < 0.025:
+                self.set_wheel_speed(0.1 * MAX_WHEEL_SPEED)
+
+            self.step()
 
     def run(self):
         self.initialize_devices()
