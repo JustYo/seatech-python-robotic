@@ -164,12 +164,16 @@ class MyRobot:
             self.step()
 
     def detect_edges(self):
-        print(
-            "Max :",
-            RangeFinder.getMaxRange(self.camera_proximity),
-            "Min : ",
-            RangeFinder.getMinRange(self.camera_proximity),
-        )
+        """blanc = loin et noir = ce qui est proche"""
+        matrix = RangeFinder.getRangeImage(self.camera_proximity)
+
+        i = 0
+
+        while i < len(matrix):
+            if matrix[i] == inf:
+                break
+            i = i + 1
+        print(i)
 
     def run(self):
         self.initialize_devices()
