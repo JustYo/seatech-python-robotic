@@ -3,7 +3,7 @@
 from math import fabs, inf
 import sys
 
-from controller import Motor, PositionSensor, Robot
+from controller import Motor, PositionSensor, Robot, RangeFinder
 
 
 TIME_STEP = 16
@@ -35,6 +35,7 @@ class MyRobot:
     l_forearm_cam_sensor = robot.getDevice("l_forearm_cam_sensor")
     laser_tilt = robot.getDevice("laser_tilt")
     base_laser = robot.getDevice("base_laser")
+    camera_proximity = robot.getDevice("range-finder")
     wheel_motors = []
     wheel_sensors = []
     rotation_motors = []
@@ -74,6 +75,7 @@ class MyRobot:
 
     def enable_devices(self):
         """Enable devices initialized in the class"""
+        RangeFinder.enable(self.camera_proximity, TIME_STEP)
         for i in range(0, 7):
             PositionSensor.enable(self.wheel_sensors[i], TIME_STEP)
             # init the motors for speed control
@@ -125,7 +127,7 @@ class MyRobot:
             )
 
             if wheel0_travel_distance > expected_travel_distance:
-                break                
+                break
 
             if expected_travel_distance - wheel0_travel_distance < 0.025:
                 self.set_wheel_speed(MAX_WHEEL_SPEED)
@@ -161,12 +163,18 @@ class MyRobot:
 
             self.step()
 
+    def detect_edges(self):
+        print(
+            "Max :",
+            RangeFinder.getMaxRange(self.camera_proximity),
+            "Min : ",
+            RangeFinder.getMinRange(self.camera_proximity),
+        )
+
     def run(self):
         self.initialize_devices()
         self.enable_devices()
-        self.robot_go_forward(0.35)
-        self.robot_rotate(M_PI)
-        self.robot_go_forward(0.35)
+        self.detect_edges()
 
 
 if __name__ == "__main__":
