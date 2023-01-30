@@ -24,17 +24,8 @@ class MyRobot:
     """An object which configure my robot"""
 
     robot = Robot()
-    wide_stereo_l_stereo_camera_sensor = robot.getDevice(
-        "wide_stereo_l_stereo_camera_sensor"
-    )
-    wide_stereo_r_stereo_camera_sensor = robot.getDevice(
-        "wide_stereo_r_stereo_camera_sensor"
-    )
-    high_def_sensor = robot.getDevice("high_def_sensor")
-    r_forearm_cam_sensor = robot.getDevice("r_forearm_cam_sensor")
-    l_forearm_cam_sensor = robot.getDevice("l_forearm_cam_sensor")
-    laser_tilt = robot.getDevice("laser_tilt")
-    base_laser = robot.getDevice("base_laser")
+    left_shoulder = robot.getDevice("l_shoulder_lift_joint")
+    right_shoulder = robot.getDevice("r_shoulder_lift_joint")
     camera_proximity = robot.getDevice("range-finder")
     wheel_motors = []
     wheel_sensors = []
@@ -146,36 +137,41 @@ class MyRobot:
 
         self.set_wheel_speed(MAX_WHEEL_SPEED)
 
-        initial_wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
+        # initial_wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
 
         while True:
-            wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
+            edges = self.detect_edges()
+            # wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
 
-            wheel0_travel_distance = fabs(
-                WHEEL_RADIUS * (wheel0_position - initial_wheel0_position)
-            )
+            # wheel0_travel_distance = fabs(
+            #     WHEEL_RADIUS * (wheel0_position - initial_wheel0_position)
+            # )
 
-            if wheel0_travel_distance > fabs(distance):
-                break
+            # if wheel0_travel_distance > fabs(distance):
+            #     break
 
-            if fabs(distance) - wheel0_travel_distance < 0.025:
-                self.set_wheel_speed(0.1 * MAX_WHEEL_SPEED)
+            # if fabs(distance) - wheel0_travel_distance < 0.025:
+            #     self.set_wheel_speed(0.1 * MAX_WHEEL_SPEED)
+
+            if edges == True:
+                self.stop_wheels()
+                self.robot_rotate(M_PI)
+                self.set_wheel_speed(MAX_WHEEL_SPEED)
 
             self.step()
 
     def detect_edges(self):
         """blanc = loin et noir = ce qui est proche"""
         matrix = RangeFinder.getRangeImage(self.camera_proximity)
-
-        i = 0
-        len(matrix) #4096
-
-        print(matrix(int(4096/3)))
+        if matrix[2500] == inf:
+            return True
+        else:
+            return False
 
     def run(self):
         self.initialize_devices()
         self.enable_devices()
-        self.detect_edges()
+        self.robot_go_forward(3)
 
 
 if __name__ == "__main__":
