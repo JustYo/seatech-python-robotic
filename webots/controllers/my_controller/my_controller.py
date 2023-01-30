@@ -25,6 +25,8 @@ class MyRobot:
     """An object which configure my robot"""
 
     robot = Robot()
+    left_shoulder = robot.getDevice("l_shoulder_lift_joint")
+    right_shoulder = robot.getDevice("r_shoulder_lift_joint")
     range_finder = RangeFinder("range-finder")
     wheel_motors = []
     wheel_sensors = []
