@@ -1,6 +1,7 @@
 """My controller"""
 
 from math import fabs, inf
+import math
 import sys
 
 from controller import Motor, PositionSensor, Robot, RangeFinder
@@ -9,7 +10,7 @@ from controller import Motor, PositionSensor, Robot, RangeFinder
 TIME_STEP = 16
 
 # PR2 constants
-MAX_WHEEL_SPEED = 3.0  # maximum velocity for the wheels [rad / s]
+MAX_WHEEL_SPEED = 15.0  # maximum velocity for the wheels [rad / s]
 WHEELS_DISTANCE = 0.4492  # distance between 2 caster wheels [m]
 SUB_WHEELS_DISTANCE = 0.098  # distance between 2 sub wheels of a caster wheel [m]
 WHEEL_RADIUS = 0.08  # wheel radius
@@ -24,9 +25,7 @@ class MyRobot:
     """An object which configure my robot"""
 
     robot = Robot()
-    left_shoulder = robot.getDevice("l_shoulder_lift_joint")
-    right_shoulder = robot.getDevice("r_shoulder_lift_joint")
-    camera_proximity = robot.getDevice("range-finder")
+    range_finder = RangeFinder("range-finder")
     wheel_motors = []
     wheel_sensors = []
     rotation_motors = []
@@ -66,7 +65,7 @@ class MyRobot:
 
     def enable_devices(self):
         """Enable devices initialized in the class"""
-        RangeFinder.enable(self.camera_proximity, TIME_STEP)
+        self.range_finder.enable(TIME_STEP)
         for i in range(0, 7):
             PositionSensor.enable(self.wheel_sensors[i], TIME_STEP)
             # init the motors for speed control
@@ -75,6 +74,11 @@ class MyRobot:
 
         for i in range(len(self.rotation_motors)):
             PositionSensor.enable(self.rotation_sensors[i], TIME_STEP)
+
+        Motor.setPosition(self.right_shoulder, float(inf))
+        Motor.setVelocity(self.right_shoulder, 0.0)
+        Motor.setPosition(self.left_shoulder, float(inf))
+        Motor.setVelocity(self.left_shoulder, 0.0)
 
     def set_wheels_speeds(self, fll, flr, frl, frr, bll, blr, brl, brr):
         """Set velocity of 8 wheels"""
@@ -101,9 +105,9 @@ class MyRobot:
     def robot_rotate(self, angle):
         self.stop_wheels()
 
-        self.set_rotation_wheels_angle(3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4)
+        self.set_rotation_wheels_angle(3.0 * math.pi/4, math.pi/4, -3.0 * math.pi/4, -math.pi/4)
 
-        self.set_wheel_speed(MAX_WHEEL_SPEED)
+        self.set_wheel_speed(MAX_WHEEL_SPEED / 3)
 
         initial_wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
         expected_travel_distance = fabs(
@@ -121,7 +125,7 @@ class MyRobot:
                 break
 
             if expected_travel_distance - wheel0_travel_distance < 0.025:
-                self.set_wheel_speed(MAX_WHEEL_SPEED)
+                self.set_wheel_speed(MAX_WHEEL_SPEED / 3)
 
             self.step()
 
@@ -132,7 +136,7 @@ class MyRobot:
         """Stop the wheels"""
         self.set_wheels_speeds(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
-    def robot_go_forward(self, distance):
+    def robot_go_forward(self):
         """Function to tell the distance for the robot"""
 
         self.set_wheel_speed(MAX_WHEEL_SPEED)
@@ -155,15 +159,15 @@ class MyRobot:
 
             if edges == True:
                 self.stop_wheels()
-                self.robot_rotate(M_PI)
+                self.robot_rotate(math.pi)
                 self.set_wheel_speed(MAX_WHEEL_SPEED)
 
             self.step()
 
     def detect_edges(self):
         """blanc = loin et noir = ce qui est proche"""
-        matrix = RangeFinder.getRangeImage(self.camera_proximity)
-        if matrix[2500] == inf:
+        matrix = self.range_finder.getRangeImage(self.range_finder)
+        if inf in matrix[2500:4096] or inf not in matrix[0:1500]:
             return True
         else:
             return False
@@ -171,7 +175,7 @@ class MyRobot:
     def run(self):
         self.initialize_devices()
         self.enable_devices()
-        self.robot_go_forward(3)
+        self.robot_go_forward()
 
 
 if __name__ == "__main__":
