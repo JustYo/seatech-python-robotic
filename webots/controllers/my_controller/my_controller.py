@@ -168,12 +168,9 @@ class MyRobot:
         matrix = RangeFinder.getRangeImage(self.camera_proximity)
 
         i = 0
+        len(matrix) #4096
 
-        while i < len(matrix):
-            if matrix[i] == inf:
-                break
-            i = i + 1
-        print(i)
+        print(matrix(int(4096/3)))
 
     def run(self):
         self.initialize_devices()
