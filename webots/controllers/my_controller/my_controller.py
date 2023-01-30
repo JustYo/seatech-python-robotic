@@ -107,7 +107,9 @@ class MyRobot:
     def robot_rotate(self, angle):
         self.stop_wheels()
 
-        self.set_rotation_wheels_angle(3.0 * math.pi/4, math.pi/4, -3.0 * math.pi/4, -math.pi/4)
+        self.set_rotation_wheels_angle(
+            3.0 * math.pi / 4, math.pi / 4, -3.0 * math.pi / 4, -math.pi / 4
+        )
 
         self.set_wheel_speed(MAX_WHEEL_SPEED / 3)
 
@@ -145,42 +147,36 @@ class MyRobot:
 
         # initial_wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
 
-        while True:
-            edges = self.detect_edges()
-            # wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
-
-            # wheel0_travel_distance = fabs(
-            #     WHEEL_RADIUS * (wheel0_position - initial_wheel0_position)
-            # )
-
-            # if wheel0_travel_distance > fabs(distance):
-            #     break
-
-            # if fabs(distance) - wheel0_travel_distance < 0.025:
-            #     self.set_wheel_speed(0.1 * MAX_WHEEL_SPEED)
-
-            if edges == True:
-                self.stop_wheels()
-                self.robot_rotate(math.pi)
-                self.set_wheel_speed(MAX_WHEEL_SPEED)
-
-            self.step()
+        edges = self.detect_edges()
+        # wheel0_position = PositionSensor.getValue(self.wheel_sensors[0])
+        # wheel0_travel_distance = fabs(
+        #     WHEEL_RADIUS * (wheel0_position - initial_wheel0_position)
+        # )
+        # if wheel0_travel_distance > fabs(distance):
+        #     break
+        # if fabs(distance) - wheel0_travel_distance < 0.025:
+        #     self.set_wheel_speed(0.1 * MAX_WHEEL_SPEED)
+        if edges == True:
+            self.stop_wheels()
+            self.robot_rotate(math.pi)
+            self.set_wheel_speed(MAX_WHEEL_SPEED)
 
     def detect_edges(self):
         """blanc = loin et noir = ce qui est proche"""
         matrix = self.range_finder.getRangeImage(self.range_finder)
-        if inf in matrix[2500:4096] or inf not in matrix[0:1500]:
+        if inf in matrix[2500:4096] or inf not in matrix[0:2000]:
             return True
         else:
             return False
 
     def run(self):
-        self.initialize_devices()
-        self.enable_devices()
         self.robot_go_forward()
 
 
 if __name__ == "__main__":
     robot = MyRobot()
+    robot.initialize_devices()
+    robot.enable_devices()
+    robot.set_wheel_speed(MAX_WHEEL_SPEED)
     while robot.step() != 1:
         robot.run()
